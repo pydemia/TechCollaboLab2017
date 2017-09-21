@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Frame version="0.1.170920">
+    <LabelFrame name="lfSaveFolder" text="Save Folder" borderwidth="2" relief="groove" width="20" row="0" column="0" columnspan="6">
+        <Label name="lbSaveFolder" width="11" row="0" column="0"/>
+        <Entry name="enSaveFolder" bg="white" width="60" row="0" column="1" columnspan="4"/>
+        <Button name="btnBrowse" text="Browse..." width="11" row="0" column="5"/>
+        <Label name="lbGenerateNum" width="11" row="1" column="4"/>
+        <Entry name="enGenerateNum" bg="white" width="11" row="1" column="5"/>
+    </LabelFrame>
+
+    <LabelFrame name="lfWaferImage" text="Wafer Image" borderwidth="2" relief="groove" width="20" row="1" column="0" columnspan="6">
+        <Label name="lbWaferImage" width="11" row="0" column="3"/>
+        <Canvas name="cvWaferImage" bg="white" width="299" height="299" row="1" column="3"/>
+    </LabelFrame>
+
+    <LabelFrame name="lfPatternClass" text="Pattern Class" borderwidth="2" relief="groove" width="20" row="3" column="0" columnspan="6">
+        <Button name = "btnCurvedLine" text="Curved-Line" width="11" row="0" column="0"/>
+        <Button name = "btnStraightLine" text="Straight-Line" width="11" row="0" column="1"/>
+        <Button name = "btnDefocus" text="Defocus" width="11" row="0" column="2"/>
+        <Button name = "btnBullsEye" text="Bull's Eye" width="11" row="0" column="3"/>
+        <Button name = "btnDounut" text="Dounut" width="11" row="0" column="4"/>
+        <Button name = "btnRandomNoise" text="Random Noise" width="11" row="0" column="5"/>
+        <Button name = "btnOthers" text="Others" width="11" row="0" column="6"/>
+    </LabelFrame>
+
+    <Button name="btnGenerate" text="Generate" width="11" row="99" column="4"/>
+    <Button name="btnClose" text="Close" width="11" row="99" column="5"/>
+</Frame>
