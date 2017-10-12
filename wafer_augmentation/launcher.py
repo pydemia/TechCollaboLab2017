@@ -4,7 +4,7 @@ from os import path, listdir, mkdir
 from PIL import Image, ImageTk, ImageDraw
 import math
 
-DEFAULT_DIR = "./img"
+DEFAULT_DIR = "./data"
 SAVE_DIR = "./patches"
 CONFIG_FILE = "config.txt"
 
@@ -13,11 +13,18 @@ class Launcher(ui.AppFrame):
     def __init__(self, xml):
         super().__init__(xml)
         self.set_title("Wafer Map Augumentation")
+        self.config = {"curved" : {},
+                       "straight" : {},
+                       "defocus" : {},
+                       "bull" : {},
+                       "dounut" : {},
+                       "random" : {},
+                       "other" : {}}
+        self._load_config()
 
         # Initalize LabelFrame1 (Save Folder)
         self.set("lbSaveFolder", "Save Folder")
         self.set("lbGenerateNum", "Generate #")
-        self._load_config()
 
         # Initalize LabelFrame2 (Wafer Image)
         self.set("lbWaferImage", "Wafer")
@@ -107,13 +114,14 @@ class Launcher(ui.AppFrame):
         self.curr_file = 1
         if(path.isfile(CONFIG_FILE)):
             with open(CONFIG_FILE, 'r') as f:
-                for line in f.readlines():
-                    attrib, val = [text.strip() for text in line.split('=')]
-                    label, 
-                    if(attrib == ""):
-                        self.set("enSaveFolder", val)
-                    elif(attrib == "curr_file"):
-                        self.curr_file = int(val)
+                conf = f.readlines()
+                for i in range(len(conf)):
+                    try:
+                        att, val = [text.strip() for text in conf[i].split('=')]
+                        pattern, attrib = [text.strip() for text in att.split('_')]
+                        self.config[pattern][attrib] = int(val)
+                    except:
+                        ui.messagebox.showerror("Wrong Configuration", "[Line" + str(i+1) +"] Wrong Configuration. Check the 'config.txt' file")
 
     # Events
     def btnBrowse_Click(self):
@@ -173,11 +181,13 @@ class Launcher(ui.AppFrame):
             self.elements["btnReset"] = ui.Tk.Button(self, text="Reset", width=11).grid(row=0, column=12, sticky=ui.Tk.constants.W)
             self.elements["btnAreaApply"] = ui.Tk.Button(self, text="Area Apply", width=11, command=self.apply).grid(row=1, column=12, sticky=ui.Tk.constants.W)
             self.elements["btnDelete"] = ui.Tk.Button(self, text="Delete", width=11, command=self.destroy).grid(row=2, column=12, sticky=ui.Tk.constants.W)
-            self.set_init(pattern)
+            self.set_init()
+            self.set_config()
             master.count[pattern] += 1
 
-        def set_init(self, pattern):
+        def set_init(self):
             base=None
+            pattern = self.name
             if(pattern=="curved"):
                 self.config(text="Curved-Line "+str(self.count+1))
                 base=10
@@ -199,7 +209,13 @@ class Launcher(ui.AppFrame):
             elif(pattern=="other"):
                 self.config(text="Others "+str(self.count+1))
                 base=70
-            self.grid(row=base+self.master.count[pattern], column=0, columnspan=6, padx=2, pady=2)
+            self.grid(row=base+self.count, column=0, columnspan=6, padx=2, pady=2)
+
+        def set_config(self):
+            pattern = self.name
+            config = self.master.config[pattern]
+            for attrib in config
+            self.variables[""]
 
         def apply(self):
             self.variables["enShift_PosX"].set(self.master.area["posX"])
@@ -208,29 +224,31 @@ class Launcher(ui.AppFrame):
             self.variables["enShift_Height"].set(self.master.area["height"])
 
         def destroy(self):
-            for i in range(self.count + 1, self.master.count[self.name]+1):
-                self.master.elements[self.name+str(i - 1)] = self.master.elements[self.name+str(i)]
-                del self.master.elements[self.name+str(i)]
-            ui.Tk.LabelFrame.destroy(self)
             self.master.count[self.name] -= 1
+            ui.Tk.LabelFrame.destroy(self)
+            for i in range(self.count + 1, self.master.count[self.name]+1):
+                self.master.elements[self.name+str(i+1)].count -= 1
+                self.master.elements[self.name+str(i+1)].set_init(self.name)
+                self.master.elements[self.name+str(i)] = self.master.elements[self.name+str(i+1)]
+                del self.master.elements[self.name+str(i+1)]
 
-
+    def add_element(self, pattern):
+        self.elements[pattern + str(self.count[pattern])] = self.Options(self, pattern)
 
     def btnCurvedLine_Click(self):
-        pattern = "curved"
-        self.elements[pattern + str(self.count[pattern])]= self.Options(self, pattern)
+        self.add_element("curved")
     def btnStraightLine_Click(self):
-        return
+        self.add_element("straight")
     def btnDefocus_Click(self):
-        return
+        self.add_element("defocus")
     def btnBullsEye_Click(self):
-        return
+        self.add_element("bull")
     def btnDounut_Click(self):
-        return
+        self.add_element("dounut")
     def btnRandomNoise_Click(self):
-        return
+        self.add_element("random")
     def btnOthers_Click(self):
-        return
+        self.add_element("other")
 
     def btnGenerate_Click(self):
         return
